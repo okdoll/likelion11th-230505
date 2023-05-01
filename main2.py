@@ -23,7 +23,7 @@ time.sleep(1)
 animal = [["릴리안", 0], ["탁호", 0], ["미첼", 0], ["리처드", 0]]
 my_bell = 3000
 my_pocket = []
-store =[["가습기", 1400], ["강아지 인형", 2400], ["강의실 책상", 2500], ["몬스테라", 1700]]
+store = {'가습기' : 1400, '강아지 인형' : 2400, '강의실 책상' : 2500, '몬스테라' : 1700}
 
 action_boolean = 1
 
@@ -40,20 +40,32 @@ while action_boolean:
     elif answer_action == "1":
         print("\n상점에 온걸 환영해구리! \n현재 상점에는 이런 물건들이 있어구리!\n")
 
-        for i in range(4):
-            print(i+1, ". ", store[i][0], ": ", store[i][1])
+        i = 1
+        for key, value in store.items():
+            print(str(i),  ". ", str(key), ": ", str(value), "벨")
+            i += 1
         
         # 물건 구매
         get_stuff = int(input("\n어떤 물건을 구입하겠어구리 ? (숫자로 입력)"))
-        time.sleep(1)
-        if my_bell < store[get_stuff-1][1]:
-            print("잔액이 부족하다구리!")
+        time.sleep(1)   
+
+        buy_stuff = store[list(store.keys())[get_stuff - 1]]
+
+        if my_bell - buy_stuff > 0:
+            my_bell = my_bell - buy_stuff
+
+            print("\n", list(store.keys())[get_stuff - 1], "를(을) 구입하셨습니다!")
+            time.sleep(0.6)
+            print("남은 벨: ", str(my_bell))
+            
+            my_pocket.append(list(store.keys())[get_stuff - 1])
+            del store[list(store.keys())[get_stuff - 1]]
+        
         else:
-            print("\n", store[get_stuff-1][0], "를(을) 구입하셨습니다!")
-            my_bell -= store[get_stuff-1][1]
-            my_pocket.append(store[get_stuff-1][0])
-            del store[get_stuff-1]
-            print("남은 벨: ", my_bell)
+            print("잔액이 부족하다구리!")
+            time.sleep(1)
+            print("남은 벨: " + str(my_bell))
+
 
         
 
@@ -91,19 +103,33 @@ while action_boolean:
           
         # 2-2. 선물하기를 선택한 경우
         elif answer_animal_action == 2:
-            print("내 주머니엔 이렇게 있어 \n")
-            for i in len(my_pocket):
-                print (i+1, my_pocket[i])
-            
-            animal_gift = int (input ("어떤 것을 선물할까? (숫자로 입력) "))
-            print(animal[choose_animal-1][0], "에게", my_pocket[animal_gift-1], "을(를) 선물했다!")                
-            print(animal[choose_animal-1][0], "친밀도 +1")
-            animal[choose_animal-1][1] += 1
+
+            if len(my_pocket) == 0:
+                print("어라? 주머니에 아무것도 없어!")
+
+            else: 
+                print("내 주머니엔 이렇게 있어 \n")
+
+                j = 1
+                for i in my_pocket:
+                    print (j, ". ", i, "\n")
+                    j += 1
+                
+                animal_gift = int (input ("어떤 것을 선물할까? (숫자로 입력) "))
+                print(animal[choose_animal-1][0], "에게", my_pocket[animal_gift-1], "을(를) 선물했다!")                
+                print(animal[choose_animal-1][0], "친밀도 +5")
+                animal[choose_animal-1][1] += 5
+                my_pocket.remove(my_pocket[animal_gift-1])
 
 
         # 2-3. 때리기를 선택한 경우
         elif answer_animal_action == 3:
             print(animal[choose_animal-1][0],": ", "응..? 아야! 왜 그러는거야!\n",animal[choose_animal-1][0],"을(를) 때렸다!")
+
+            animal[choose_animal-1][1] -= 1
+            print(animal[choose_animal-1][0], "친밀도 -1")
+            time.sleep(1)
+
 
         else:
              print("섬을 키워서 다른 주민들도 데려와보자구리!")
@@ -111,35 +137,64 @@ while action_boolean:
 
 
 
-    # # 3. 나무 흔들기를 선택한 경우
-    # elif answer_action == "3":
+    # 3. 나무 흔들기를 선택한 경우
+    elif answer_action == "3":
+        print("나무를 흔듭니다.")
+        time.sleep(1)
+        result = random.choice(["100벨", "사과", "벌"])
 
-    #     # 100벨이 떨어질경우
-    #     if result == "100벨":
+        # 100벨이 떨어질경우
+        if result == "100벨":
+            print("앗, ", result, "이(가) 떨어졌다!")
+            my_bell += 100
+            time.sleep(0.5)
+            print("+ 100벨")
+            print("남은 벨: ",  str(my_bell))
 
-    #     # 사과가 떨어질경우
-    #     elif result == "사과":
+        # 사과가 떨어질경우
+        elif result == "사과":
+            print("앗, ", result, "이(가) 떨어졌다!")
+            time.sleep(0.5)
+            my_pocket.append("사과")
+            print("내 주머니에 사과가 추가되었습니다.")
 
-    #     # 벌이 나타날경우
-    #     elif result == "벌":
+        # 벌이 나타날경우
+        elif result == "벌":
+            print("앗, ", result, "이(가) 떨어졌다!")
+            time.sleep(0.5)
+            print("벌이 나타났습니다!")
+            time.sleep(0.6)
+            print("아야... 벌에 물렸어!")
 
 
 
+    # 4. 정보보기를 선택한 경우
+    elif answer_action == "4":
+        print("\n내 정보")
+        time.sleep(0.5)
 
-    # # 4. 정보보기를 선택한 경우
-    # elif answer_action == "4":
+        # 이름 출력
+        print("- 이름 : ", name)
 
-    #     # 이름 출력
+        # 남은 벨 출력
+        print("- 남은 벨 : ", my_bell)
 
-    #     # 남은 벨 출력
+        # 주머니 출력
+        print("- 내 주머니 : ", my_pocket)
 
-    #     # 주머니 출력
+        # 주민 친밀도 출력
+        print("- 주민과 친밀도 : ")
+        
+        for i in range(4):
+            print(str(i+1), ". ", animal[i][0], ": ", animal[i][1])
+            
 
-    #     # 주민 친밀도 출력
+        time.sleep(1)
         
         
         
-    # # 잘못된 입력을 했을경우
-    # else:
-       
+    # 잘못된 입력을 했을경우
+    else:
+       print("\n다른 활동을 골라줘구리!")
+       time.sleep(0.7)
 
